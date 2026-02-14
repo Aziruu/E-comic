@@ -16,6 +16,7 @@ return new class extends Migration
             
             $table->string('name');
             $table->string('role')->nullable(); // Main, Villain, Support
+            $table->string('status')->default('Alive');
             $table->string('image_path')->nullable(); // Foto karakter
             $table->text('description')->nullable(); // Penjelasan singkat
             $table->boolean('is_favorite')->default(false); // Karakter favorit
