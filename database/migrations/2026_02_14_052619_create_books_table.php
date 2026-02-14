@@ -17,8 +17,7 @@ return new class extends Migration
             // "Series macem macem" (Manga, Manhwa, Webtoon) -> String bebas
             $table->string('type')->default('Manga'); 
             
-            $table->string('author');
-            $table->string('serialization')->nullable(); // Penerbit/Majalah
+            $table->foreignId('serialization_id')->nullable()->constrained('serializations')->onDelete('set null');
             
             $table->decimal('rating', 3, 1)->nullable(); // Skala 1.0 - 10.0
             $table->integer('total_chapters')->default(0);

@@ -5,22 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Genre;
 use App\Models\BookCover;
+use App\Models\Author;
+use App\Models\Serialization;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
-    /**
-     * TAMPILKAN SEMUA BUKU (Library)
-     */
     public function index()
     {
         // Kita ambil buku + cover utamanya aja biar ringan
         // Paginasi 12 buku per halaman
+        $query = Book::with('covers');
+
         $books = Book::with('covers')->latest()->paginate(12);
-        
-        return view('books.index', compact('books'));
+        $genres = Genre::orderBy('name')->get();
+
+        return view('books.index', compact('books', 'genres'));
     }
 
     /**
@@ -30,8 +32,10 @@ class BookController extends Controller
     {
         // Kita butuh data Genre buat dipilih di checkbox/select2
         $genres = Genre::orderBy('name')->get();
-        
-        return view('books.create', compact('genres'));
+        $authors = Author::orderBy('name')->get();
+        $serializations = Serialization::orderBy('name')->get();
+
+        return view('books.create', compact('genres', 'authors', 'serializations'));
     }
 
     /**
@@ -50,7 +54,7 @@ class BookController extends Controller
         // 2. Buat Slug Otomatis kalau kosong
         // Misal judul: "Solo Leveling" -> slug: "solo-leveling"
         $slug = $request->slug ? Str::slug($request->slug) : Str::slug($request->title_primary);
-        
+
         // Cek biar slug gak kembar
         if (Book::where('slug', $slug)->exists()) {
             $slug = $slug . '-' . time();
@@ -62,8 +66,7 @@ class BookController extends Controller
             'title_secondary' => $request->title_secondary,
             'slug' => $slug,
             'type' => $request->type,
-            'author' => $request->author,
-            'serialization' => $request->serialization,
+            'serialization_id' => $request->serialization_id,
             'rating' => $request->rating,
             'total_chapters' => $request->total_chapters,
             'last_read_chapter' => $request->last_read_chapter,
@@ -76,6 +79,10 @@ class BookController extends Controller
         // $request->genre_ids isinya array [1, 5, 8] dsb.
         if ($request->has('genre_ids')) {
             $book->genres()->attach($request->genre_ids);
+        }
+
+        if ($request->has('author_ids')) {
+            $book->authors()->attach($request->author_ids);
         }
 
         // 5. Handle Upload Cover (Bisa Banyak)
@@ -113,7 +120,10 @@ class BookController extends Controller
     public function edit(Book $book)
     {
         $genres = Genre::orderBy('name')->get();
-        return view('books.edit', compact('book', 'genres'));
+        $authors = Author::orderBy('name')->get();
+        $serializations = Serialization::orderBy('name')->get();
+
+        return view('books.edit', compact('book', 'genres', 'authors', 'serializations'));
     }
 
     /**
@@ -126,14 +136,13 @@ class BookController extends Controller
         ]);
 
         // Update Data Dasar
-        $book->update($request->except(['covers', 'genre_ids'])); // Update semua kecuali cover & genre
+        $book->update($request->except(['covers', 'genre_ids', 'author_ids']));
 
-        // Update Genre (Pakai sync biar yang nggak dicentang otomatis kehapus)
-        if ($request->has('genre_ids')) {
-            $book->genres()->sync($request->genre_ids);
-        } else {
-            $book->genres()->detach(); // Kalau kosong semua, hapus relasi genre
-        }
+        // Sync Genre
+        $book->genres()->sync($request->genre_ids ?? []);
+
+        // Sync Authors (BARU)
+        $book->authors()->sync($request->author_ids ?? []);
 
         // Tambah Cover Baru (Kalau ada upload lagi)
         if ($request->hasFile('covers')) {

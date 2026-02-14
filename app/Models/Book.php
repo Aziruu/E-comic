@@ -15,8 +15,7 @@ class Book extends Model
         'title_secondary',
         'slug',
         'type',
-        'author',
-        'serialization',
+        'serialization_id',
         'rating',
         'total_chapters',
         'last_read_chapter',
@@ -33,7 +32,6 @@ class Book extends Model
 
     // --- RELASI (RELATIONSHIPS) ---
 
-    // 1. Relasi ke Cover (One to Many)
     // Cara panggil: $book->covers
     public function covers()
     {
@@ -48,17 +46,25 @@ class Book extends Model
             ?? $this->covers->first(); // Kalau gak ada yang primary, ambil yang pertama aja
     }
 
-    // 2. Relasi ke Genre (Many to Many)
     // Cara panggil: $book->genres
     public function genres()
     {
         return $this->belongsToMany(Genre::class, 'book_genre', 'book_id', 'genre_id');
     }
 
-    // 3. Relasi ke Character (One to Many)
     // Cara panggil: $book->characters
     public function characters()
     {
         return $this->hasMany(Character::class);
+    }
+
+    public function authors()
+    {
+        return $this->belongsToMany(Author::class, 'book_author');
+    }
+
+    public function serialization()
+    {
+        return $this->belongsTo(Serialization::class);
     }
 }
