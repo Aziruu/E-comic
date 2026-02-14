@@ -47,6 +47,7 @@ class BookController extends Controller
         $request->validate([
             'title_primary' => 'required|string|max:255',
             'type' => 'required',
+            'link_url' => 'nullable|url',
             'covers.*' => 'image|mimes:jpeg,png,jpg,webp|max:2048', // Validasi tiap file gambar
             'genre_ids' => 'array' // Pastikan genre dikirim sebagai array ID
         ]);
@@ -67,6 +68,10 @@ class BookController extends Controller
             'slug' => $slug,
             'type' => $request->type,
             'serialization_id' => $request->serialization_id,
+            'series' => $request->series,
+            'status_release' => $request->status_release ?? 'Ongoing',
+            'link_url' => $request->link_url,
+            'is_favorite' => $request->has('is_favorite'),
             'rating' => $request->rating,
             'total_chapters' => $request->total_chapters,
             'last_read_chapter' => $request->last_read_chapter,
@@ -133,15 +138,19 @@ class BookController extends Controller
     {
         $request->validate([
             'title_primary' => 'required|string|max:255',
+            'link_url' => 'nullable|url',
         ]);
 
         // Update Data Dasar
-        $book->update($request->except(['covers', 'genre_ids', 'author_ids']));
+        $data = $request->except(['covers', 'genre_ids', 'author_ids']);
+        $data['is_favorite'] = $request->has('is_favorite');
+
+        $book->update($data);
 
         // Sync Genre
         $book->genres()->sync($request->genre_ids ?? []);
 
-        // Sync Authors (BARU)
+        // Sync Authors
         $book->authors()->sync($request->author_ids ?? []);
 
         // Tambah Cover Baru (Kalau ada upload lagi)

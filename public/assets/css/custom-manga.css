@@ -1,0 +1,237 @@
+/* public/assets/css/custom-manga.css */
+
+/* --- COLOR PALETTE --- */
+:root {
+    --c-white: #FFFFFF;
+    --c-black: #000000;
+    --c-green-1: #88FD88; /* Genre, Header Char, Icon Plus */
+    --c-green-2: #BBFB98; /* Status Hidup */
+    --c-yellow-1: #FBFB18; /* Bintang */
+    --c-yellow-btn: #FFD325; /* Tombol Edit, MC Text */
+    --c-blue: #25A4FF; /* Bookmark, Tombol Baca */
+    --c-grey-dark: #0A0A0A; /* Bintang Kosong */
+    --c-grey-text: #D2D2D2; /* Judul Secondary */
+    --c-grey-desc: #C3C3C3; /* Desc Char */
+    --c-pink-fav: #FB98B7; /* Fav Heart */
+    --c-pink-heroine: #FB98D3; /* Heroine Text */
+    --c-red-villain: #FF4747; /* Villain Text */
+}
+
+/* --- UTILITIES --- */
+.radius-8 { border-radius: 8px !important; }
+.radius-4 { border-radius: 4px !important; }
+.text-justify { text-align: justify; }
+
+/* --- BUTTONS --- */
+.btn-baca {
+    background-color: var(--c-blue);
+    color: white;
+    border: none;
+    font-weight: bold;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+.btn-baca:hover { background-color: #1a8cd8; color: white; }
+
+.btn-edit-custom {
+    background-color: var(--c-yellow-btn);
+    color: white; 
+    border: none;
+    font-weight: bold;
+    padding: 12px;
+    width: 100%;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+.btn-edit-custom:hover { background-color: #eec41f; color: white; }
+
+/* --- BADGES & ICONS --- */
+.badge-genre {
+    background-color: var(--c-green-1);
+    color: white;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    border: none;
+}
+
+.icon-bookmark {
+    color: var(--c-blue);
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.star-filled { color: var(--c-yellow-1); }
+.star-empty { color: var(--c-grey-dark); }
+
+/* --- CHARACTERS SECTION --- */
+.char-header {
+    background-color: var(--c-green-1);
+    padding: 15px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.char-card-body {
+    background-color: var(--c-green-1);
+    padding: 15px;
+    border-radius: 0 0 8px 8px;
+}
+
+.char-item {
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 15px;
+    position: relative;
+    align-items: flex-start;
+}
+
+.char-role-mc { color: var(--c-yellow-btn); font-weight: bold; }
+.char-role-heroine { color: var(--c-pink-heroine); font-weight: bold; }
+.char-role-villain { color: var(--c-red-villain); font-weight: bold; }
+.char-role-normal { color: gray; font-weight: bold; }
+
+.badge-status-alive {
+    background-color: var(--c-green-2);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 10px;
+}
+
+.badge-status-dead {
+    background-color: var(--c-grey-text);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 10px;
+}
+
+.icon-fav-char {
+    color: var(--c-pink-fav);
+    font-size: 18px;
+}
+
+.btn-add-char {
+    background-color: white;
+    color: var(--c-green-1);
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* --- TAMBAHAN KHUSUS INDEX (LIBRARY) --- */
+.search-container {
+    background: var(--c-white);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.card-book {
+    border: none;
+    border-radius: 12px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    background: var(--c-white);
+    overflow: hidden;
+}
+
+.card-book:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.badge-type {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.7);
+    color: var(--c-white);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+}
+
+.badge-rating-index {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--c-yellow-1);
+    color: var(--c-black);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.status-dot {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+/* --- TAMBAHAN KHUSUS FORM (CREATE/EDIT) --- */
+.form-section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px dashed #eee;
+}
+
+.check-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 8px 12px;
+    transition: 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.check-card:hover {
+    background: #f9f9f9;
+}
+
+/* Logic: Kalau checkbox dicentang, labelnya jadi biru */
+.form-check-input:checked + label {
+    font-weight: bold;
+    color: var(--c-blue);
+}
+
+.cover-upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.cover-upload-area:hover {
+    border-color: var(--c-blue);
+    background: #f0f8ff;
+}

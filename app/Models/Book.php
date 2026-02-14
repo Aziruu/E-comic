@@ -16,6 +16,10 @@ class Book extends Model
         'slug',
         'type',
         'serialization_id',
+        'series',
+        'status_release',
+        'link_url',
+        'is_favorite',
         'rating',
         'total_chapters',
         'last_read_chapter',
@@ -28,6 +32,7 @@ class Book extends Model
     protected $casts = [
         'rating' => 'float',
         'release_date' => 'date',
+        'is_favorite' => 'boolean'
     ];
 
     // --- RELASI (RELATIONSHIPS) ---
