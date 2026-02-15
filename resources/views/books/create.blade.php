@@ -162,9 +162,17 @@
                                 </div>
                             </div>
 
-                            <div class="form-check form-switch p-3 bg-light rounded radius-8 mt-3">
-                                <input class="form-check-input" type="checkbox" name="is_favorite" id="favSwitch">
-                                <label class="form-check-label fw-bold ms-2" for="favSwitch">Jadikan Favorit? ⭐</label>
+                            <div class="p-3 bg-light rounded radius-8 mt-3 d-flex align-items-center">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" name="is_favorite" id="favSwitch"
+                                        style="cursor: pointer; width: 3em; height: 1.5em;"
+                                        {{ isset($book) && $book->is_favorite ? 'checked' : '' }}>
+
+                                    <label class="form-check-label fw-bold ms-3 mt-1" for="favSwitch"
+                                        style="cursor: pointer;">
+                                        Jadikan Favorit? ⭐
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>

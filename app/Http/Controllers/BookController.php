@@ -178,6 +178,12 @@ class BookController extends Controller
             Storage::disk('public')->delete($cover->image_path);
         }
 
+        foreach ($book->characters as $char) {
+            if ($char->image_path) {
+                Storage::disk('public')->delete($char->image_path);
+            }
+        }
+
         // Hapus data buku (otomatis hapus cover & relasi genre di DB karena 'cascade')
         $book->delete();
 
