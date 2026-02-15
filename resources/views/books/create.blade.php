@@ -57,20 +57,29 @@
                         <div class="card-body p-4">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <div class="form-section-title">Authors / Artist</div>
-                                    <div class="overflow-auto pe-2" style="max-height: 200px;">
+                                    <div class="d-flex justify-content-between align-items-center mb-2 border-bottom pb-2">
+                                        <div class="form-section-title mb-0 border-0 p-0">Authors</div>
+                                        <button type="button" class="btn btn-sm btn-light text-primary fw-bold"
+                                            onclick="openCustomModal('customModalAuthor')">
+                                            <i class="fa-solid fa-plus"></i> New
+                                        </button>
+                                    </div>
+                                    <div class="overflow-auto pe-2" style="max-height: 200px;" id="authorListContainer">
                                         @foreach ($authors as $author)
                                             <div class="check-card">
                                                 <div class="form-check w-100 mb-0">
                                                     <input class="form-check-input" type="checkbox" name="author_ids[]"
                                                         value="{{ $author->id }}" id="auth{{ $author->id }}">
                                                     <label class="form-check-label w-100 cursor-pointer"
-                                                        for="auth{{ $author->id }}">{{ $author->name }}</label>
+                                                        for="auth{{ $author->id }}">
+                                                        {{ $author->name }}
+                                                    </label>
                                                 </div>
                                             </div>
                                         @endforeach
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-section-title">Genres</div>
                                     <div class="overflow-auto pe-2" style="max-height: 200px;">
@@ -129,8 +138,12 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">Serialization (Publisher)</label>
-                                <select name="serialization_id" class="form-select">
+                                <label class="form-label d-flex justify-content-between">
+                                    Serialization
+                                    <a href="#" class="text-decoration-none fs-12 fw-bold" 
+                                        onclick="openCustomModal('customModalSerial'); return false;">+ Add New</a>
+                                </label>
+                                <select name="serialization_id" id="serializationSelect" class="form-select">
                                     <option value="">-- Pilih Publisher --</option>
                                     @foreach ($serializations as $serial)
                                         <option value="{{ $serial->id }}">{{ $serial->name }}</option>
@@ -165,9 +178,7 @@
                             <div class="p-3 bg-light rounded radius-8 mt-3 d-flex align-items-center">
                                 <div class="form-check form-switch mb-0">
                                     <input class="form-check-input" type="checkbox" name="is_favorite" id="favSwitch"
-                                        style="cursor: pointer; width: 3em; height: 1.5em;"
-                                        {{ isset($book) && $book->is_favorite ? 'checked' : '' }}>
-
+                                        style="cursor: pointer; width: 3em; height: 1.5em;">
                                     <label class="form-check-label fw-bold ms-3 mt-1" for="favSwitch"
                                         style="cursor: pointer;">
                                         Jadikan Favorit? ⭐
@@ -180,7 +191,6 @@
                     <div class="card border-0 shadow-sm radius-8">
                         <div class="card-body p-4">
                             <div class="form-section-title">Upload Covers</div>
-
                             <div class="cover-upload-area position-relative"
                                 onclick="document.getElementById('coverInput').click()">
                                 <i class="fa-solid fa-cloud-arrow-up fs-1 text-muted mb-2"></i>
@@ -189,7 +199,6 @@
                                 <input type="file" name="covers[]" id="coverInput" class="d-none" multiple
                                     accept="image/*" onchange="previewImages(this)">
                             </div>
-
                             <div id="imagePreviewContainer" class="d-flex gap-2 mt-3 overflow-auto pb-2"></div>
                         </div>
                     </div>
@@ -202,29 +211,123 @@
             </div>
         </form>
     </div>
+
+    <div class="custom-modal-overlay" id="customModalAuthor">
+        <div class="custom-modal-box">
+            <div class="custom-modal-header">
+                <h6>Add Author</h6>
+                <button class="custom-modal-close" onclick="closeCustomModal('customModalAuthor')">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <input type="text" id="newAuthorName" class="form-control" placeholder="Nama Author...">
+                <button type="button" id="btnSaveAuthor" class="btn btn-primary w-100 mt-3 radius-8">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-modal-overlay" id="customModalSerial">
+        <div class="custom-modal-box">
+            <div class="custom-modal-header">
+                <h6>Add Publisher</h6>
+                <button class="custom-modal-close" onclick="closeCustomModal('customModalSerial')">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <input type="text" id="newSerialName" class="form-control" placeholder="Nama Publisher...">
+                <button type="button" id="btnSaveSerial" class="btn btn-primary w-100 mt-3 radius-8">Simpan</button>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
-    <script>
-        function previewImages(input) {
-            const container = document.getElementById('imagePreviewContainer');
-            container.innerHTML = '';
+<script>
+    function openCustomModal(modalId) {
+        document.getElementById(modalId).classList.add('active');
+    }
 
-            if (input.files) {
-                Array.from(input.files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.className = 'rounded border';
-                        img.style.width = '60px';
-                        img.style.height = '90px';
-                        img.style.objectFit = 'cover';
-                        container.appendChild(img);
-                    }
-                    reader.readAsDataURL(file);
-                });
+    function closeCustomModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+
+    document.querySelectorAll('.custom-modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCustomModal(this.id);
             }
+        });
+    });
+
+    function previewImages(input) {
+        const container = document.getElementById('imagePreviewContainer');
+        container.innerHTML = '';
+        if (input.files) {
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'rounded border';
+                    img.style.width = '60px';
+                    img.style.height = '90px';
+                    img.style.objectFit = 'cover';
+                    container.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            });
         }
-    </script>
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('btnSaveAuthor').addEventListener('click', function() {
+            const name = document.getElementById('newAuthorName').value.trim();
+            
+            if (!name) {
+                alert('Nama tidak boleh kosong!');
+                return;
+            }
+
+            const fd = new FormData();
+            fd.append('name', name);
+            fd.append('_token', '{{ csrf_token() }}');
+
+            fetch('{{ route("quick.author") }}', { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(data => {
+                const html = `<div class="check-card" style="background: #f0f8ff; border-color: #25A4FF;">
+                    <div class="form-check w-100 mb-0">
+                        <input class="form-check-input" type="checkbox" name="author_ids[]" value="${data.id}" id="auth${data.id}" checked>
+                        <label class="form-check-label w-100 fw-bold text-primary cursor-pointer" for="auth${data.id}">${data.name}</label>
+                    </div></div>`;
+                
+                document.getElementById('authorListContainer').insertAdjacentHTML('afterbegin', html);
+                document.getElementById('newAuthorName').value = '';
+                closeCustomModal('customModalAuthor');
+            })
+            .catch(() => alert('Gagal menyimpan'));
+        });
+
+        document.getElementById('btnSaveSerial').addEventListener('click', function() {
+            const name = document.getElementById('newSerialName').value.trim();
+            
+            if (!name) {
+                alert('Nama tidak boleh kosong!');
+                return;
+            }
+
+            const fd = new FormData();
+            fd.append('name', name);
+            fd.append('_token', '{{ csrf_token() }}');
+
+            fetch('{{ route("quick.serialization") }}', { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(data => {
+                const opt = new Option(data.name, data.id, true, true);
+                document.getElementById('serializationSelect').add(opt);
+                document.getElementById('newSerialName').value = '';
+                closeCustomModal('customModalSerial');
+            })
+            .catch(() => alert('Gagal menyimpan'));
+        });
+    });
+</script>
 @endpush

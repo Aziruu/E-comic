@@ -1,18 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@yield('title', 'MangaLib')</title>
-    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', 'MangaLib Azil')</title>
+
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/favicon.ico') }}" />
-    
+
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/bootstrap.min.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/vendors/css/vendors.min.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/theme.min.css') }}" />
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/custom-manga.css') }}" />
 
@@ -24,32 +27,32 @@
         <div class="navbar-wrapper">
             <div class="m-header">
                 <a href="{{ url('/') }}" class="b-brand">
-                    <h4 class="text-white mt-2">MangaLib</h4>
+                    <h4 class="text-white fw-bold mt-2 letter-spacing-1">MangaLib</h4>
                 </a>
             </div>
+
             <div class="navbar-content">
                 <ul class="nxl-navbar">
                     <li class="nxl-item nxl-caption">
                         <label>Main Menu</label>
                     </li>
 
-                    <li class="nxl-item">
+                    <li class="nxl-item {{ request()->is('/') ? 'active' : '' }}">
                         <a href="{{ url('/') }}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-airplay"></i></span>
                             <span class="nxl-mtext">Dashboard</span>
                         </a>
                     </li>
 
-                    <li class="nxl-item">
+                    <li class="nxl-item {{ request()->routeIs('books.*') ? 'active' : '' }}">
                         <a href="{{ route('books.index') }}" class="nxl-link">
                             <span class="nxl-micon"><i class="feather-book"></i></span>
                             <span class="nxl-mtext">Library Books</span>
                         </a>
                     </li>
 
-                    <li class="nxl-item">
-                        <a href="#" class="nxl-link">
-                            <span class="nxl-micon"><i class="feather-users"></i></span>
+                    <li class="nxl-item {{ request()->routeIs('characters.*') ? 'active' : '' }}">
+                        <a href="#" class="nxl-link"> <span class="nxl-micon"><i class="feather-users"></i></span>
                             <span class="nxl-mtext">Characters</span>
                         </a>
                     </li>
@@ -64,6 +67,7 @@
             </div>
         </div>
     </nav>
+
     <header class="nxl-header">
         <div class="header-wrapper">
             <div class="header-left d-flex align-items-center gap-4">
@@ -75,6 +79,7 @@
                     </div>
                 </a>
             </div>
+
             <div class="header-right ms-auto">
                 <div class="d-flex align-items-center">
                     <div class="dropdown nxl-h-item">
@@ -103,7 +108,32 @@
     </header>
     <main class="nxl-container">
         <div class="nxl-content">
-            @yield('content')
+            <div class="page-header">
+                <div class="page-header-left d-flex align-items-center">
+                    <div class="page-header-title">
+                        <h5 class="m-b-10">
+                            @if (request()->is('/'))
+                                Dashboard
+                            @elseif(request()->routeIs('books.*'))
+                                Library
+                            @else
+                                MangaLib
+                            @endif
+                        </h5>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show radius-8 mb-4" role="alert">
+                        <i class="fa-solid fa-check-circle me-2"></i> {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+
+                @yield('content')
+            </div>
         </div>
 
         <footer class="footer">
@@ -112,10 +142,17 @@
             </p>
         </footer>
     </main>
+
     <script src="{{ asset('assets/vendors/js/vendors.min.js') }}"></script>
     <script src="{{ asset('assets/js/common-init.min.js') }}"></script>
-    <script src="{{ asset('assets/js/dashboard-init.min.js') }}"></script>
-    <script src="{{ asset('assets/js/theme-customizer-init.min.js') }}"></script>
+
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
 
     @stack('scripts')
 </body>

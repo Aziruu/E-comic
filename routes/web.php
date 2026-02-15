@@ -3,6 +3,7 @@
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\QuickAddController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,3 +19,6 @@ Route::get('/characters/{character}/edit', [CharacterController::class, 'edit'])
 Route::put('/characters/{character}', [CharacterController::class, 'update'])->name('characters.update');
 
 Route::resource('genres', GenreController::class);
+
+Route::post('/quick-add/author', [QuickAddController::class, 'storeAuthor'])->name('quick.author');
+Route::post('/quick-add/serialization', [QuickAddController::class, 'storeSerialization'])->name('quick.serialization');
